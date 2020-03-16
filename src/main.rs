@@ -58,7 +58,7 @@ fn log_time(label: &str, path: &std::path::Path) {
 }
 
 fn get_time_stamp() -> String {
-    let format = "%Y-%m-%d %H:%M";
+    let format = "%Y-%m-%d %H%M";
     let time_stamp: String = chrono::Local::now().format(format).to_string();
 
     time_stamp
@@ -81,7 +81,7 @@ mod tests {
     
     #[test]
     pub fn test_time() {
-        println!("{}", chrono::Local::now().format("%Y-%m-%d %H:%M"));
+        println!("{}", chrono::Local::now().format("%Y-%m-%d %H%M"));
     }
 
     #[test]
