@@ -8,6 +8,13 @@ edition = "2018"
 
 [dependencies]
 chrono = {version = "0.4.11", features= ["serde"]}
+gdk = "0.12.1"
+gio = "0.8.1"                     # Rust bindings for the Gio library
+glib = "0.9.3"                           # Rust bindings for the GLib library
+
+[dependencies.gtk]
+version = "0.8.1"
+features = ["v3_16"]
 
 [profile.dev]
 opt-level = 0
