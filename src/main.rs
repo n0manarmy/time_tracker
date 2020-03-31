@@ -41,7 +41,6 @@ fn build(application: &gtk::Application) {
 
     // used to manage the time clock display
     let (msg_sender, msg_receiver) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
-    
     // let (tx, rx) = mpsc::channel();
     // let (tx, rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
     // let tx1 = mpsc::Sender::clone(&tx);
@@ -50,7 +49,7 @@ fn build(application: &gtk::Application) {
 
 
     // loads the xml created in glade
-    let glade_src = include_str!("../gui.glade");
+    let glade_src = include_str!("gui/gui.glade");
     let builder = Builder::new_from_string(glade_src);
 
     // loads the window from glade that contains the objects
