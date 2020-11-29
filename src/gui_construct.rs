@@ -1,16 +1,12 @@
 #![cfg_attr(not(feature = "gtk_3_10"), allow(unused_variables, unused_mut))]
 
-extern crate chrono;
-extern crate gio;
-extern crate gtk;
-
 use gio::prelude::*;
 use gtk::prelude::*;
 
 use crate::file_utils::FileUtils;
-
+use crate::message::Message;
 use crate::time_utils::TimeUtils;
-use std::env::args;
+
 use std::{thread, time};
 use std::rc::Rc;
 use glib::{clone, Continue};
@@ -20,16 +16,13 @@ use gtk::{
 
 const LOG_FILE: &'static str = "log_file.log";
 
-enum Message {
-    UpdateLabel(String),
-}
 
 pub struct GuiConstruct {}
 
 impl GuiConstruct {
     pub fn build(application: &gtk::Application) {
+        
         //init data store for times
-    
         let previous_logs = if FileUtils::log_file_exists(LOG_FILE) {
             FileUtils::load_log_file(LOG_FILE)
         } else {

@@ -3,6 +3,8 @@
 mod file_utils;
 mod time_utils;
 mod gui_construct;
+mod message;
+mod time_object;
 
 use gio::prelude::*;
 use gui_construct::GuiConstruct;
