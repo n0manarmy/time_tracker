@@ -1,3 +1,5 @@
+use chrono::prelude::*;
+
 pub struct TimeUtils {}
 
 impl TimeUtils {
@@ -21,7 +23,7 @@ impl TimeUtils {
     /// # Usage
     /// Builds a string value based on our const TIME_FORMAT
     pub fn get_time(time_format: &str) -> String {
-        let time_stamp: String = chrono::Local::now().format(time_format).to_string();
+        let time_stamp: String = Local::now().format(time_format).to_string();
 
         time_stamp
     }
