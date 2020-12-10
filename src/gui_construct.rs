@@ -119,6 +119,7 @@ impl GuiConstruct {
         ListStore::new(&col_type)
     }
     
+    //Create log column
     fn add_columns(model: &Rc<ListStore>, tree_view: &TreeView) {
         {
             let renderer = gtk::CellRendererText::new();

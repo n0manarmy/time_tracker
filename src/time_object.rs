@@ -79,27 +79,7 @@ impl TimeObject {
         self.time_stamp = time_stamp;
     }
 
-    pub fn get_hours_mins_diff(t1: &TimeObject, t2: &TimeObject) -> (i32, i32) {
-        let mut days: i32 = 0;
-        if t1.get_month() > t2.get_month() {
-            days = Self::get_days_diff(t2, t1);
-        } else if t2.get_month() > t1.get_month() {
-            days = Self::get_days_diff(t1, t2);
-        }
-
-        let x: (i32, i32) = t1.get_hour_min();
-        let y: (i32, i32) = t2.get_hour_min();
-
-        ((x.0 - y.0).abs(), (x.1 - y.1).abs())
-    }
-
-    pub fn get_days_diff(x: &TimeObject, y: &TimeObject) -> i32 {
-        // (x - y).abs() 
-
-        0
-    }
-
-    pub fn get_rounded_mins(min: i32) -> i32 {
+    pub fn get_rounded_mins(min: i64) -> i64 {
         15 * (min / 15)
     }
 }
@@ -118,7 +98,13 @@ mod tests {
             Local.ymd(2020, 12, 8).and_hms(6, 13, 25), 
             Local.ymd(2020, 12, 8).and_hms(6, 13, 25));
 
-        assert_eq!(TimeObject::get_days_diff(&t1, &t2), 2);
+        t2.set_time(TimeState::OUT, 
+            Local.ymd(2020, 12, 8).and_hms(6, 13, 25), 
+            Local.ymd(2020, 12, 10).and_hms(6, 13, 25));
+        
+        let min = t1.time_stamp.signed_duration_since(t2.time_stamp).num_minutes().abs();
+        assert_eq!(min, (48 * 60));
+    
     }
 
     #[test]
@@ -163,27 +149,24 @@ mod tests {
     #[test]
     pub fn test_calculate_time() {
         let mut t1: TimeObject = TimeObject::new();
-        let mut t2: TimeObject = TimeObject::new();
-        
         let in_time: DateTime<Local> = Local.ymd(2020, 12, 8).and_hms(6, 13, 25);
-        let out_time: DateTime<Local> = Local.ymd(2020, 12, 8).and_hms(16, 44, 21);
-
         t1.set_time(TimeState::IN, in_time, in_time);
         assert_eq!(t1.date, in_time);
         assert_eq!(t1.time_stamp, in_time);
-        
+
+        let mut t2: TimeObject = TimeObject::new();        
+        let out_time: DateTime<Local> = Local.ymd(2020, 12, 8).and_hms(16, 44, 21);
         t2.set_time(TimeState::OUT, in_time, out_time);
         assert_eq!(t2.date, in_time);
         assert_eq!(t2.time_stamp, out_time);
         
-        let time = TimeObject::get_hours_mins_diff(t2, t1);
-        dbg!(time);
+        let mins = t1.time_stamp.signed_duration_since(t2.time_stamp).num_minutes().abs();
+        dbg!(mins);
 
-        let hours = time.0;
-        let mins = TimeObject::get_rounded_mins(time.1);
+        let hours = mins / 60;
+        dbg!(hours);
+        let rounded_mins = TimeObject::get_rounded_mins(mins - (hours * 60));
         assert_eq!(hours, 10);
-        assert_eq!(mins, 30);
-        dbg!(&hours);
-        dbg!(&mins);
+        assert_eq!(rounded_mins, 30);
     }
 }

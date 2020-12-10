@@ -11,7 +11,6 @@ use gui_construct::GuiConstruct;
 
 use std::env::args;
 
-
 fn main() {
     let application = gtk::Application::new(
         Some("com.time.tracker.my"),

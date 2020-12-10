@@ -11,8 +11,8 @@ chrono = {version = "*", features= ["serde"]}
 gdk = "*"
 gio = "*"                     # Rust bindings for the Gio library
 glib = "*"                           # Rust bindings for the GLib library
-# serde = {version = "*", features = ["derive"]}
-# serde_json = "*"                     # A JSON serialization file format
+serde = {version = "*", features = ["derive"]}
+serde_json = "*"                     # A JSON serialization file format
 
 [dependencies.gtk]
 version = "*"
