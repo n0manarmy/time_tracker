@@ -1,4 +1,4 @@
-#![cfg_attr(not(feature = "gtk_3_10"), allow(unused_variables, unused_mut))]
+// #![cfg_attr(not(feature = "gtk_3_10"), allow(unused_variables, unused_mut))]
 
 use gio::prelude::*;
 use gtk::prelude::*;

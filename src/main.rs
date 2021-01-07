@@ -1,13 +1,15 @@
 #![cfg_attr(not(feature = "gtk_3_10"), allow(unused_variables, unused_mut))]
+extern crate serde;
 
 mod file_utils;
 mod time_utils;
-mod gui_construct;
+mod glade_gui_construct;
+mod manual_gui_construct;
 mod message;
 mod time_object;
 
 use gio::prelude::*;
-use gui_construct::GuiConstruct;
+use glade_gui_construct::GuiConstruct;
 
 use std::env::args;
 

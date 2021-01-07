@@ -45,6 +45,26 @@ impl FileUtils {
         Path::new(path).exists()
     }
 
+    pub fn read_log_file_to_vec(path: &'static str) -> Vec<String> {
+        if Self::log_file_exists(&path) {
+            let mut file = match File::open(&path) {
+                Ok(f) => f,
+                Err(why) => panic!("{}", why),
+            };
+            let reader = std::io::BufReader::new(file);
+            let mut times: Vec<String> = Vec::new();
+            for line in reader.lines() {
+                match line {
+                    Ok(l) => times.push(l),
+                    Err(why) => panic!("{}", why),
+                }
+            }
+            return times;
+        } else {
+            panic!("Log file does not exist!");
+        }
+    }
+
     pub fn load_log_file(path: &'static str) -> String {
         let mut file = match File::open(path) {
             Ok(file) => file,
