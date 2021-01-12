@@ -9,13 +9,14 @@ mod message;
 mod time_object;
 
 use gio::prelude::*;
-use glade_gui_construct::GuiConstruct;
+// use glade_gui_construct::GuiConstruct;
+use manual_gui_construct::GuiConstruct;
 
 use std::env::args;
 
 fn main() {
     let application = gtk::Application::new(
-        Some("com.time.tracker.my"),
+        Some("com.my.time.tracker"),
         Default::default(),
     )
     .expect("Initialization failed...");

@@ -13,10 +13,10 @@ gio = "*"                     # Rust bindings for the Gio library
 glib = "*"                           # Rust bindings for the GLib library
 serde = {version = "*", features = ["derive"]}
 serde_json = "*"                     # A JSON serialization file format
+gtk = "*"
 
-[dependencies.gtk]
-version = "*"
-features = ["v3_16"]
+[features]
+gtk_3_24 = ["gtk/v3_24"] #for CI tools
 
 [profile.dev]
 opt-level = 0
