@@ -39,16 +39,23 @@ impl GuiConstruct {
         let (msg_sender, msg_receiver) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
 
         // storage for time in/time out
+        // let list_store: gtk::ListStore = Self::create_model();
+        // let list_store = Self::build_liststore(previous_logs);
+
         let list_store: gtk::ListStore = Self::create_model();
+
+        let col_indicies: [u32; 1] = [0];
+        for line in previous_logs.lines() {
+            let line: [&dyn ToValue; 1] = [&line];
+            list_store.set(&list_store.append(), &col_indicies, &line);
+        }
+
         let model = Rc::new(list_store.clone());
         let renderer = gtk::CellRendererText::new();
         let column = gtk::TreeViewColumn::new();
-
         // tree view to store the new model
         let tree_view = TreeView::new_with_model(&*model);
-        // reference counter based on the data model
-        let col_indicies: [u32; 1] = [0];
-        let values: [&dyn ToValue; 1] = [&previous_logs];
+        // let values: [&dyn ToValue; 1] = [&previous_logs];
         let scrolled_window = gtk::ScrolledWindow::new(gtk::NONE_ADJUSTMENT, gtk::NONE_ADJUSTMENT);
 
         // Spacers
@@ -58,16 +65,18 @@ impl GuiConstruct {
         let button_time_in = gtk::Button::new_with_label(time_in_button_text);
         let button_time_out = gtk::Button::new_with_label(time_out_button_text);
 
-        list_store.set(&list_store.append(), &col_indicies, &values);
-        tree_view.set_vexpand(true);
-        
-        // scrolled window holds the tree view
-        scrolled_window.add(&tree_view);
+
         column.pack_start(&renderer, true);
         column.set_title("Log");
         column.set_alignment(0.5);
         column.add_attribute(&renderer, "text", 0);
         tree_view.append_column(&column);
+        // reference counter based on the data model
+        // list_store.set(&list_store.append(), &col_indicies, &values);
+        tree_view.set_vexpand(true);
+
+        // scrolled window holds the tree view
+        scrolled_window.add(&tree_view);
     
         // Button functions and callbacks
         button_time_in.connect_clicked(clone!(@weak list_store => move |_| {

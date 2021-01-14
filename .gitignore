@@ -1,3 +1,4 @@
 target/
 log_file.log
+log_file.rson
 Cargo.lock
