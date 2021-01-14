@@ -1,4 +1,5 @@
 target/
 log_file.log
 log_file.rson
+log_file.json
 Cargo.lock

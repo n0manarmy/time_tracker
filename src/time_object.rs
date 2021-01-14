@@ -11,7 +11,7 @@ use serde::{Serialize, Deserialize};
 use serde_json::Result;
 use std::fmt;
 
-#[derive(PartialEq, Serialize, Deserialize)]
+#[derive(PartialEq, Serialize, Deserialize, Debug)]
 pub enum TimeState {
     IN,
     OUT,
@@ -28,7 +28,7 @@ impl fmt::Display for TimeState {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct TimeObject {
     pub time_state: TimeState,
     pub date: DateTime<Local>,
@@ -39,6 +39,7 @@ impl TimeObject {
 
     const CLOCK_IN_FORMAT: &'static str = "%H:%M:%S";
     const TIME_FORMAT_STAMP: &'static str = "%Y-%m-%d %H%M";
+    const YEAR: &'static str = "%Y";
     const MONTH: &'static str = "%m";
     const DAY: &'static str = "%d";
     const HOUR: &'static str = "%H";
@@ -60,11 +61,23 @@ impl TimeObject {
         self.time_stamp.format(Self::DAY).to_string().parse::<i32>().unwrap()
     }
 
+    pub fn get_time_stamp_date_string(&self) -> String {
+        let s = [
+            &self.time_stamp.format(Self::YEAR).to_string(),
+            "-",
+            &self.time_stamp.format(Self::MONTH).to_string(),
+            "-",
+            &self.time_stamp.format(Self::DAY).to_string()
+        ].concat();
+
+        String::from(s)
+    }
+
     pub fn update_time_stamp(&mut self) {
         self.time_stamp = Local::now();
     }
 
-    pub fn get_current_time(&mut self) -> String {
+    pub fn get_current_time(&self) -> String {
         self.time_stamp.format(&Self::CLOCK_IN_FORMAT).to_string()
     }
 
@@ -78,14 +91,18 @@ impl TimeObject {
         (hour, minute)
     }
 
-    pub fn clock_in(&mut self) {
+    pub fn clock_in(mut self) -> TimeObject {
         self.time_state = TimeState::IN;
         self.time_stamp = Local::now();
+
+        self
     }
 
-    pub fn clock_out(&mut self) {
+    pub fn clock_out(mut self) -> TimeObject {
         self.time_state = TimeState::OUT;
         self.time_stamp = Local::now();
+
+        self
     }
 
     pub fn set_time(&mut self, time_state: TimeState, date: DateTime<Local>, time_stamp: DateTime<Local>) {
@@ -115,6 +132,15 @@ impl TimeObject {
             Ok(s) => s,
             Err(_) => panic!("Error converting to json str".to_string()),
         }
+    }
+
+    pub fn build_time_object_vec(times: Vec<String>) -> Vec<TimeObject> {
+        let mut time_objects: Vec<TimeObject> = Vec::new();
+        for t in times {
+            time_objects.push(TimeObject::to_time_obj(t));
+        }
+
+        time_objects
     }
 }
 

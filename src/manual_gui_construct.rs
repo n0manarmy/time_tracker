@@ -13,17 +13,14 @@ use std::rc::Rc;
 use glib::{clone, Continue};
 use gtk::{
     Orientation,
-    ApplicationWindow, ListStore, TreeView
+    ApplicationWindow, TreeView
 };
-
-const LOG_FILE: &'static str = "log_file.rson";
-
 
 pub struct GuiConstruct {}
 
 impl GuiConstruct {
 
-    pub fn build_frames(previous_logs: String) -> gtk::Box {
+    pub fn build_frames(times: Vec<TimeObject>, log_file: &'static str) -> gtk::Box {
         let curent_time_label_text = "Current Time";
         let time_in_button_text = "Time In";
         let time_out_button_text = "Time Out";
@@ -38,26 +35,6 @@ impl GuiConstruct {
         let current_time = gtk::Label::new(Some(&TimeUtils::get_current_time()));
         let (msg_sender, msg_receiver) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
 
-        // storage for time in/time out
-        // let list_store: gtk::ListStore = Self::create_model();
-        // let list_store = Self::build_liststore(previous_logs);
-
-        let list_store: gtk::ListStore = Self::create_model();
-
-        let col_indicies: [u32; 1] = [0];
-        for line in previous_logs.lines() {
-            let line: [&dyn ToValue; 1] = [&line];
-            list_store.set(&list_store.append(), &col_indicies, &line);
-        }
-
-        let model = Rc::new(list_store.clone());
-        let renderer = gtk::CellRendererText::new();
-        let column = gtk::TreeViewColumn::new();
-        // tree view to store the new model
-        let tree_view = TreeView::new_with_model(&*model);
-        // let values: [&dyn ToValue; 1] = [&previous_logs];
-        let scrolled_window = gtk::ScrolledWindow::new(gtk::NONE_ADJUSTMENT, gtk::NONE_ADJUSTMENT);
-
         // Spacers
         let spacer = gtk::Frame::new(None);
 
@@ -65,34 +42,51 @@ impl GuiConstruct {
         let button_time_in = gtk::Button::new_with_label(time_in_button_text);
         let button_time_out = gtk::Button::new_with_label(time_out_button_text);
 
+        // storage for time in/time out
+        let col_type: [glib::Type; 3] = [
+            glib::Type::String,
+            glib::Type::String,
+            glib::Type::String,
+        ];
 
-        column.pack_start(&renderer, true);
-        column.set_title("Log");
-        column.set_alignment(0.5);
-        column.add_attribute(&renderer, "text", 0);
-        tree_view.append_column(&column);
-        // reference counter based on the data model
-        // list_store.set(&list_store.append(), &col_indicies, &values);
-        tree_view.set_vexpand(true);
-
-        // scrolled window holds the tree view
+        let list_store: gtk::ListStore = gtk::ListStore::new(&col_type);
+        let scrolled_window = gtk::ScrolledWindow::new(gtk::NONE_ADJUSTMENT, gtk::NONE_ADJUSTMENT);
+        scrolled_window.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
+        let col_indicies: [u32; 3] = [0, 1, 2];
+        
+        let tree_view = Self::build_table(&list_store, times, &col_indicies);
+        
         scrolled_window.add(&tree_view);
     
         // Button functions and callbacks
         button_time_in.connect_clicked(clone!(@weak list_store => move |_| {
-            let time_stamp = TimeUtils::get_time_stamp("IN");
+            // let time_stamp = TimeUtils::get_time_stamp("IN");
+            let t: TimeObject = TimeObject::new().clock_in();
     
-            let values: [&dyn ToValue; 1] = [&time_stamp];
-            list_store.set(&list_store.append(), &[0], &values);
-            FileUtils::write_to_log_file(&time_stamp, &LOG_FILE);
+            let v: [&dyn ToValue; 3] = [
+                &t.get_time_stamp_date_string(), 
+                &t.get_current_time(),
+                &t.time_state.to_string(),
+            ];
+            list_store.set(&list_store.append(), &col_indicies, &v);
+            FileUtils::write_to_log_file(&t.to_serde_str(), &log_file);
         }));
     
         button_time_out.connect_clicked(clone!(@weak list_store => move |_| {
-            let time_stamp = TimeUtils::get_time_stamp("OUT");
+            // let time_stamp = TimeUtils::get_time_stamp("OUT");
     
-            let values: [&dyn ToValue; 1] = [&time_stamp];
-            list_store.set(&list_store.append(), &[0], &values);
-            FileUtils::write_to_log_file(&time_stamp, &LOG_FILE);
+            // let values: [&dyn ToValue; 1] = [&time_stamp];
+            // list_store.set(&list_store.append(), &[0], &values);
+            // FileUtils::write_to_log_file(&time_stamp, &LOG_FILE);
+            let t: TimeObject = TimeObject::new().clock_out();
+    
+            let v: [&dyn ToValue; 3] = [
+                &t.get_time_stamp_date_string(), 
+                &t.get_current_time(),
+                &t.time_state.to_string(),
+            ];
+            list_store.set(&list_store.append(), &col_indicies, &v);
+            FileUtils::write_to_log_file(&t.to_serde_str(), &log_file);
         }));
 
 
@@ -132,41 +126,72 @@ impl GuiConstruct {
         completed_frame
     }
 
-    pub fn build(application: &gtk::Application) {
+    pub fn build_table(list_store: &gtk::ListStore, times: Vec<TimeObject>, col_indicies: &[u32]) -> gtk::TreeView {
+        let model = Rc::new(list_store.clone());
+        let tree_view = TreeView::new_with_model(&*model);
+
+        Self::add_columns(&tree_view);
+        tree_view.set_vexpand(true);
+
+        for t in times {
+
+            let v: [&dyn ToValue; 3] = [
+                &t.get_time_stamp_date_string(), 
+                &t.get_current_time(),
+                &t.time_state.to_string(),
+            ];
+            list_store.set(&list_store.append(), &col_indicies, &v);
+        }
+
+        tree_view
+    }
+
+    pub fn add_columns(tree_view: &gtk::TreeView) {
+        {
+            let renderer = gtk::CellRendererText::new();
+            let column = gtk::TreeViewColumn::new();
+            renderer.set_alignment(0.5, 1.0);
+            column.pack_start(&renderer, true);
+            column.set_title("Date");
+            column.set_alignment(0.5);
+            column.add_attribute(&renderer, "text", 0);
+            tree_view.append_column(&column);
+        }
+
+        {
+            let renderer = gtk::CellRendererText::new();
+            let column = gtk::TreeViewColumn::new();
+            renderer.set_alignment(0.5, 1.0);
+            column.pack_start(&renderer, true);
+            column.set_title("Time Stamp");
+            column.set_alignment(0.5);
+            column.add_attribute(&renderer, "text", 1);
+            tree_view.append_column(&column);
+        }
+
+        {
+            let renderer = gtk::CellRendererText::new();
+            let column = gtk::TreeViewColumn::new();
+            renderer.set_alignment(0.5, 1.0);
+            column.pack_start(&renderer, true);
+            column.set_title("Time State");
+            column.set_alignment(0.5);
+            column.add_attribute(&renderer, "text", 2);
+            tree_view.append_column(&column);
+        }
+
+    }
+
+    pub fn build(application: &gtk::Application, times: Vec<TimeObject>, log_file: &'static str) {
         
-        //init data store for times
-        let previous_logs = if FileUtils::log_file_exists(LOG_FILE) {
-            FileUtils::load_log_file(LOG_FILE)
-        } else {
-            String::new()
-        };
-        
-    
-        // used to manage the time clock display
-        // let (msg_sender, msg_receiver) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
-    
-        // loads the xml created in glade
-        // let glade_src = include_str!("gui/gui.glade");
-        // let builder = Builder::new_from_string(glade_src);
-    
-        // loads the window from glade that contains the objects
-        // let window: ApplicationWindow = builder.get_object("root").expect("Couldn't get window");
+
         let window: ApplicationWindow = ApplicationWindow::new(application);
         window.set_default_size(600,400);
         window.set_application(Some(application));
         window.set_title("Time Tracker");
 
-        window.add(&Self::build_frames(previous_logs));
+        window.add(&Self::build_frames(times, log_file));
     
         window.show_all();
-    }
-    
-    fn create_model() -> ListStore {
-    
-        let col_type: [glib::Type; 1] = [
-            glib::Type::String,
-        ];
-    
-        ListStore::new(&col_type)
     }
 }

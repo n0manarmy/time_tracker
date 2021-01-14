@@ -11,10 +11,15 @@ mod time_object;
 use gio::prelude::*;
 // use glade_gui_construct::GuiConstruct;
 use manual_gui_construct::GuiConstruct;
+use time_object::TimeObject;
+use file_utils::FileUtils;
 
 use std::env::args;
 
 fn main() {
+
+    
+
     let application = gtk::Application::new(
         Some("com.my.time.tracker"),
         Default::default(),
@@ -22,7 +27,15 @@ fn main() {
     .expect("Initialization failed...");
 
     application.connect_activate(|app| {
-        GuiConstruct::build(app);
+        //init data store for times
+        let log_file: &'static str = "log_file.json";
+        let times: Vec<TimeObject> = if FileUtils::log_file_exists(&log_file) {
+            TimeObject::build_time_object_vec(FileUtils::read_log_file_to_vec(&log_file))
+        } else {
+            Vec::new()
+        };
+        // dbg!(times);
+        GuiConstruct::build(app, times, log_file);
     });
 
     application.run(&args().collect::<Vec<_>>());
