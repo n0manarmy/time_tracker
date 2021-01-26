@@ -29,7 +29,7 @@ impl MyMenuBar {
             d.destroy();
         });
 
-        completed_frame.pack_start(&menu_bar, false, false, 0);
+        completed_frame.pack_start(&menu_bar, false, false, 20);
         completed_frame
     }
 }

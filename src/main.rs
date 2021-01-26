@@ -19,8 +19,6 @@ use std::env::args;
 
 fn main() {
 
-    
-
     let application = gtk::Application::new(
         Some("com.my.time.tracker"),
         Default::default(),
