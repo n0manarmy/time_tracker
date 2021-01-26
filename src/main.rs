@@ -7,6 +7,7 @@ mod glade_gui_construct;
 mod manual_gui_construct;
 mod message;
 mod time_object;
+mod my_menu_bar;
 
 use gio::prelude::*;
 // use glade_gui_construct::GuiConstruct;

@@ -7,6 +7,7 @@ use crate::file_utils::FileUtils;
 use crate::message::Message;
 use crate::time_utils::TimeUtils;
 use crate::time_object::TimeObject;
+use crate::my_menu_bar::MyMenuBar;
 
 use std::{thread, time};
 use std::rc::Rc;
@@ -20,7 +21,7 @@ pub struct GuiConstruct {}
 
 impl GuiConstruct {
 
-    pub fn build_frames(times: Vec<TimeObject>, log_file: &'static str) -> gtk::Box {
+    pub fn init(times: Vec<TimeObject>, log_file: &'static str) -> gtk::Box {
         let curent_time_label_text = "Current Time";
         let time_in_button_text = "Time In";
         let time_out_button_text = "Time Out";
@@ -120,7 +121,7 @@ impl GuiConstruct {
 
         right_frame.pack_start(&scrolled_window, true, true, 20);
 
-        completed_frame.pack_start(&left_frame, false, false, 5);
+        completed_frame.pack_start(&left_frame, false, true, 5);
         completed_frame.pack_start(&right_frame, true, true, 5);
 
         completed_frame
@@ -188,9 +189,16 @@ impl GuiConstruct {
         let window: ApplicationWindow = ApplicationWindow::new(application);
         window.set_default_size(600,400);
         window.set_application(Some(application));
+        // window.set_position(gtk::WindowPosition::None);
         window.set_title("Time Tracker");
 
-        window.add(&Self::build_frames(times, log_file));
+        let completed_frame = gtk::Box::new(Orientation::Vertical, 0);
+        
+        // Packing with add defaults justification based on received containers
+        completed_frame.add(&MyMenuBar::init());
+        completed_frame.add(&Self::init(times, log_file));
+        
+        window.add(&completed_frame);
     
         window.show_all();
     }
