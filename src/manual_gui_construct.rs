@@ -22,7 +22,9 @@ pub struct GuiConstruct {}
 impl GuiConstruct {
 
     pub fn init(times: Vec<TimeObject>, log_file: &'static str) -> gtk::Box {
+        //define our label values
         let curent_time_label_text = "Current Time";
+        let time_diff_label_text = "Time worked";
         let time_in_button_text = "Time In";
         let time_out_button_text = "Time Out";
 
@@ -34,6 +36,16 @@ impl GuiConstruct {
         //Time label and updater services
         let current_time_label = gtk::Label::new(Some(curent_time_label_text));
         let current_time = gtk::Label::new(Some(&TimeUtils::get_current_time()));
+        let time_diff_label = gtk::Label::new(Some(time_diff_label_text));
+        
+        let time_diff_value: gtk::Label = if times.len() > 0 {
+            let temp = &TimeUtils::get_time_diff(times.last().unwrap());
+            dbg!(&temp);
+            gtk::Label::new(Some(&temp))
+        } else {
+            gtk::Label::new(Some(&String::from("No time IN")))
+        };
+
         let (msg_sender, msg_receiver) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
 
         // Spacers
@@ -112,9 +124,31 @@ impl GuiConstruct {
         });
         // ----<
 
+        // let time_diff_value_clone = time_diff_value.clone();
+
+        // thread::spawn(move || {
+        //     loop {
+        //         thread::sleep(time::Duration::from_secs(1));
+        //         let value = if times.len() > 0 {
+        //             let temp = &TimeUtils::get_time_diff(times.last().unwrap());
+        //             dbg!(&temp);
+        //             gtk::Label::new(Some(&temp))
+        //         } else {
+        //             gtk::Label::new(Some(&String::from("No time IN")))
+        //         };
+        //         let _ = msg_sender.send(Message::UpdateLabel(temp));
+        //     }
+        // });
+
+        // msg_
+
         //build frames
         left_frame.pack_start(&current_time_label, false, false, 0);
         left_frame.pack_start(&current_time, false, false, 0);
+        left_frame.pack_start(&spacer, false, false, 10);
+        left_frame.pack_start(&time_diff_label, false, false, 0);
+        left_frame.pack_start(&time_diff_value, false, false, 0);
+        left_frame.pack_start(&spacer, false, false, 10);
         left_frame.pack_start(&spacer, false, false, 10);
         left_frame.pack_start(&button_time_in, false, false, 0);
         left_frame.pack_start(&button_time_out, false, false, 0);

@@ -1,4 +1,5 @@
 use chrono::prelude::*;
+use crate::time_object::{TimeState, TimeObject};
 
 pub struct TimeUtils {}
 
@@ -18,6 +19,19 @@ impl TimeUtils {
 
     pub fn get_current_time() -> String {
         Self::get_time(Self::TIME_FORMAT_SECONDS)
+    }
+
+    pub fn get_time_diff(time: &TimeObject) -> String {
+        match time.time_state {
+            TimeState::IN => {
+                let t_hours = time.time_stamp.signed_duration_since(Local::now()).num_hours().abs();
+                let t_mins = time.time_stamp.signed_duration_since(Local::now()).num_minutes().abs();
+                let t_mins = t_mins - (t_hours * 60);
+                let t_mins = TimeObject::get_rounded_mins(t_mins);
+                format!("h:{} m:{}", t_hours, t_mins)
+            },
+            _ => String::from("No time IN"),
+        }
     }
 
     /// # Usage

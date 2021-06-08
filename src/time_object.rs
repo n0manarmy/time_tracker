@@ -11,7 +11,7 @@ use serde::{Serialize, Deserialize};
 use serde_json::Result;
 use std::fmt;
 
-#[derive(PartialEq, Serialize, Deserialize, Debug)]
+#[derive(PartialEq, Serialize, Deserialize, Debug, Copy, Clone)]
 pub enum TimeState {
     IN,
     OUT,
@@ -28,7 +28,7 @@ impl fmt::Display for TimeState {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
 pub struct TimeObject {
     pub time_state: TimeState,
     pub date: DateTime<Local>,
@@ -246,6 +246,28 @@ mod tests {
 
         dbg!(t1.to_string());
         dbg!(t2.to_string());
+    }
+
+    #[test]
+    pub fn test_get_total_hours_mins() {
+        let mut t1: TimeObject = TimeObject::new();
+        let mut t2: TimeObject = TimeObject::new();
+
+        t1.set_time(TimeState::IN, 
+            Local.ymd(2020, 12, 8).and_hms(6, 13, 25), 
+            Local.ymd(2020, 12, 8).and_hms(6, 13, 25));
+
+        t2.set_time(TimeState::OUT, 
+            Local.ymd(2020, 12, 10).and_hms(6, 52, 47), 
+            Local.ymd(2020, 12, 10).and_hms(6, 52, 47));
+        
+        let t_hours = t1.time_stamp.signed_duration_since(t2.time_stamp).num_hours().abs();
+        let t_mins = t1.time_stamp.signed_duration_since(t2.time_stamp).num_minutes().abs();
+        dbg!(t_mins);
+        let t_mins = t_mins - (t_hours * 60);
+        dbg!(t_hours);
+        dbg!(TimeObject::get_rounded_mins(t_mins));
+    
     }
 
     #[test]
