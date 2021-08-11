@@ -15,7 +15,7 @@ function createWindow() {
 	// Create the browser window.
 	const mainWindow = new BrowserWindow({
 		width: 800,
-		height: 400,
+		height: 800,
 		// maxHeight: 400,
 		webPreferences: {
 			nodeIntegrationInWorker: true,
@@ -27,14 +27,14 @@ function createWindow() {
 
 	// mainWindow.webContents.openDevTools()
 
-	globalShortcut.register('f5', function () {
-		console.log('f5 is pressed')
-		mainWindow.reload()
-	})
-	globalShortcut.register('CommandOrControl+R', function () {
-		console.log('CommandOrControl+R is pressed')
-		mainWindow.reload()
-	})
+	// globalShortcut.register('f5', function () {
+	// 	console.log('f5 is pressed')
+	// 	mainWindow.reload()
+	// })
+	// globalShortcut.register('CommandOrControl+R', function () {
+	// 	console.log('CommandOrControl+R is pressed')
+	// 	mainWindow.reload()
+	// })
 
 	// and load the index.html of the app.
 	mainWindow.loadFile('index.html')

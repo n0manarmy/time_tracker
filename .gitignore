@@ -1,5 +1,7 @@
-target/
-log_file.log
-log_file.rson
-log_file.json
-Cargo.lock
+rust_time_lib/target/
+rust_time_lib/log_file.log
+rust_time_lib/log_file.rson
+rust_time_lib/log_file.json
+rust_time_lib/Cargo.lock
+rust_time_lib/pkg/
+electron_ui/node_modules/

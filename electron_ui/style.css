@@ -1,6 +1,7 @@
 .grid_container {
     display: grid;
     grid-template-columns: 1fr 4fr;
+    /* grid-template-columns: fit-content(40%) fit-content(40%) 4fr; */
     gap: 10px;
     grid-auto-rows: minmax(100px, auto);
     background-color: bisque;
