@@ -1,0 +1,25 @@
+.grid_container {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+    background-color: bisque;
+}
+
+.menu {
+    grid-column: 1;
+    grid-row: 1;
+    /* border: 1px solid black; */
+}
+
+.data_table {
+    /* background-color: blue; */
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.table {
+    padding: 5px;
+    border: 1px solid black;
+    width: 100%;
+}

@@ -1,0 +1,14 @@
+{
+  "name": "time_tracker_ui",
+  "version": "1.0.0",
+  "description": "UI Interface for rust time tracking library",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Penn Wilbert",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^13.1.7"
+  }
+}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<title>Hello World!</title>
+</head>
+
+<body>
+	<div class="grid_container">
+		<div class="menu">
+			<p>Current Time:</p> 
+			<p><span id="current_time_value"></span></p>
+			<p>Time worked:</p>
+			<p><span id="time_worked"></span></p>
+			<p><button id="time_in_button">Time in</button></p>
+			<p><button id="time_out_button">Time out</button></p>
+			<!-- <p><button id="refresh_time_button">Refresh time</button></p> -->
+		</div>
+
+		<div class="data_table">
+			<table class="table" id="time_table">
+				<tr>
+					<th>Date</th>
+					<th>Time Stamp</th>
+					<th>Time State</th>
+				</tr>
+			</table>
+		</div>
+
+	</div>
+<!-- 
+	We are using Node.js <span id="node-version"></span>,
+	Chromium <span id="chrome-version"></span>,
+	and Electron <span id="electron-version"></span>. -->
+
+	<!-- You can also require other files to run in this process -->
+	<script src="./renderer.js"></script>
+	<!-- <script src="./wasm_runner.js"></script> -->
+
+</body>
+
+</html>
