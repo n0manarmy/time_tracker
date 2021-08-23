@@ -18,6 +18,7 @@ chrono = {version = "*", features= ["serde", "wasmbind"]}
 serde = {version = "*", features = ["derive"]}
 serde_json = "*"                     # A JSON serialization file format
 web-sys = { version = "0.3.52", features = ["console"] }                       # Bindings for all Web APIs, a procedurally generated crate from WebIDL 
+js-sys = "0.3.52"                  # Bindings for all JS global objects and functions in all JS environments like Node.js and bro…
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires

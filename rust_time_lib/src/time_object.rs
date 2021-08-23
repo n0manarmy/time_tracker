@@ -117,7 +117,7 @@ impl TimeObject {
     }
 
     pub fn to_string(&self) -> String {
-        let mut form = self.time_stamp.format(Self::TIME_FORMAT_STAMP).to_string();
+        let form = self.time_stamp.format(Self::TIME_FORMAT_STAMP).to_string();
         form + " - " + &self.time_state.to_string()
     }
 
@@ -153,7 +153,7 @@ mod tests {
 
     #[test]
     pub fn read_log_file_to_time_object() {
-        let times: Vec<String> = FileUtils::read_log_file_to_vec("log_file.log");
+        let times: Vec<String> = FileUtils::read_log_file_to_vec("log_file.json");
         let mut time_objects: Vec<TimeObject> = Vec::new();
         dbg!("{:?}", &times);
         for t in times {

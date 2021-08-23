@@ -7,6 +7,7 @@ mod label_values;
 mod time_obj_helper;
 
 extern crate web_sys;
+extern crate js_sys;
 
 use time_obj_helper::TimeObjHelper;
 use wasm_bindgen::prelude::*;
@@ -38,6 +39,24 @@ pub fn clock_in_out(state: String) -> TimeObjHelper {
         &_ => panic!("found nothing in the match"),
     }
     
+}
+
+#[wasm_bindgen]
+pub fn get_previous_logs() -> Box<[TimeObjHelper]> {
+    load_previous_logs().into_boxed_slice()
+}
+
+pub fn load_previous_logs() -> Vec<TimeObjHelper> {
+    let log_file = file_utils::FileUtils::load_log_file("log_file.json");
+    let log_file = file_utils::FileUtils::read_log_file_to_vec(&log_file);
+    let log_file = time_object::TimeObject::build_time_object_vec(log_file);
+
+    let log_file = log_file.into_iter().map(|log| TimeObjHelper::new(
+                                                    log.get_time_stamp_date_string(),
+                                                    log.get_current_time(),
+                                                    log.time_state.to_string())).collect();
+
+    log_file
 }
 
 // #[wasm_bindgen]

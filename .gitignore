@@ -5,3 +5,6 @@ rust_time_lib/log_file.json
 rust_time_lib/Cargo.lock
 rust_time_lib/pkg/
 electron_ui/node_modules/
+electron_ui/.yarn/
+electron_ui/yarn.lock
+electron_ui/.yarnrc

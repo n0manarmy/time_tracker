@@ -34,3 +34,17 @@ impl TimeObjHelper {
         self.time_state.clone()
     }
 }
+
+#[wasm_bindgen]
+pub struct TimeObjHelpers {
+    time_obj_helpers: Vec<TimeObjHelper>,
+}
+
+#[wasm_bindgen]
+impl TimeObjHelpers {
+
+    #[wasm_bindgen(getter)]
+    pub fn get_time_object_helpers(&self) -> Box<[TimeObjHelper]> {
+        
+    }
+}
