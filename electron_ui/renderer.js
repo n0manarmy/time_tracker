@@ -5,19 +5,21 @@
 // selectively enable features needed in the rendering
 // process.
 
-console.log('init renderer.js')
-
 const { ipcRenderer } = require('electron');
 const path = require('path');
 
 // spawn timer worker to send message very 1000ms to update the timer.
 const timer_worker = new Worker(path.resolve(__dirname, 'current_time.js'));
 const rust_worker = new Worker(path.resolve(__dirname, 'rust_worker.js'));
+
 const time_in_button = document.getElementById('time_in_button');
 const time_out_button = document.getElementById('time_out_button');
 
 rust_worker.onmessage = function(event) {
     switch (event.data[0]) {
+        case 'ack_load_log_file':
+            console.log('ack_load_log_file');
+            console.log(event.data[1]);
         case 'ack_get_current_time':
             document.getElementById('current_time_value').innerHTML = event.data[1];
             break;
@@ -71,23 +73,12 @@ time_out_button.addEventListener('click', () => {
     // ipcRenderer.send('update_time_out');
 });
 
-// // Catchers for buttons from main
-// ipcRenderer.on('update_time_received', function(event, response) {
-//     // console.log(event);
+// Catchers for buttons from main
+// ipcRenderer.on('main_load_log_file', function(event, response) {
+//     console.log('main_load_log_file');
 //     // let tz_offset = new Date().getTimezoneOffset();
 //     // document.getElementById('current_time_value').innerHTML = Date().toLocaleString('en-US', { timezone: tz_offset });
-//     rust_worker.postMessage(['get_wasm_time']);
+//     rust_worker.postMessage('load_log_file');
 // });
 
-// ipcRenderer.on('time_in_received', function(event, response) {
-//     console.log(event);
-
-//     // let tz_offset = new Date().getTimezoneOffset();
-//     // document.getElementById('current_time_value').innerHTML = Date().toLocaleString('en-US', { timezone: tz_offset });
-// });
-
-// ipcRenderer.on('time_out_received', function(event, response) {
-//     console.log(event);
-//     // let tz_offset = new Date().getTimezoneOffset();
-//     // document.getElementById('current_time_value').innerHTML = Date().toLocaleString('en-US', { timezone: tz_offset });
-// });
+rust_worker.postMessage(['load_log_file']);

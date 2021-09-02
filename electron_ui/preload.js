@@ -13,3 +13,14 @@
 // 		replaceText(`${type}-version`, process.versions[type])
 // 	}
 // })
+
+// console.log('init preload.js');
+
+// const { ipcRenderer } = require('electron');
+// const path = require('path');
+
+// // spawn timer worker to send message very 1000ms to update the timer.
+// const timer_worker = new Worker(path.resolve(__dirname, 'current_time.js'));
+// const rust_worker = new Worker(path.resolve(__dirname, 'rust_worker.js'));
+
+// rust_worker.postMessage('load_log_file');

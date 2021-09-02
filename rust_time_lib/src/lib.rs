@@ -25,7 +25,7 @@ pub fn get_current_time() -> String {
 
 #[wasm_bindgen]
 pub fn clock_in_out(state: String) -> TimeObjHelper {
-    web_sys::console::log_1(&format!("rust: clock_in_out state {}", state).into());
+    // web_sys::console::log_1(&format!("rust: clock_in_out state {}", state).into());
     // label_values::get_in_label_value()
     match state.as_ref() {
         "IN" => {
@@ -42,24 +42,33 @@ pub fn clock_in_out(state: String) -> TimeObjHelper {
 }
 
 #[wasm_bindgen]
-pub fn get_previous_logs() -> Box<[TimeObjHelper]> {
-    load_previous_logs().into_boxed_slice()
+pub fn get_previous_logs() -> Vec<JsValue> {
+    unsafe {
+        web_sys::console::log_1(&format!("get_previous_logs").into());
+    }    
+    load_previous_logs()
 }
 
-pub fn load_previous_logs() -> Vec<TimeObjHelper> {
-    let log_file = file_utils::FileUtils::load_log_file("log_file.json");
-    let log_file = file_utils::FileUtils::read_log_file_to_vec(&log_file);
+pub fn load_previous_logs() -> Vec<JsValue> {
+    let log_file: String = file_utils::load_log_file("log_file.json");
+    let log_file = file_utils::read_log_file_to_vec(log_file);
     let log_file = time_object::TimeObject::build_time_object_vec(log_file);
 
-    let log_file = log_file.into_iter().map(|log| TimeObjHelper::new(
-                                                    log.get_time_stamp_date_string(),
-                                                    log.get_current_time(),
-                                                    log.time_state.to_string())).collect();
+    let log_file = log_file.into_iter().map(|log| time_obj_helper::time_object_to_js_value(log)).collect();
 
     log_file
 }
 
-// #[wasm_bindgen]
-// pub fn load_existing_times() -> (String, String, String) {
-//     ExportedTupleStruct("one".into(), "two".into(), "three".into())
-// }
+#[cfg(test)]
+mod test {
+
+    use super::*;
+
+    #[test]
+    pub fn test_load_previous_logs() {
+        let log_file = load_previous_logs();
+        for l in log_file {
+            println!("{:?}", l);
+        }
+    }
+}
