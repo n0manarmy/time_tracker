@@ -8,3 +8,4 @@ electron_ui/node_modules/
 electron_ui/.yarn/
 electron_ui/yarn.lock
 electron_ui/.yarnrc
+test_log_file.json
