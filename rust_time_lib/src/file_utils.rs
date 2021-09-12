@@ -2,6 +2,8 @@ use std::io::prelude::*;
 use std::path::Path;
 use std::fs::File;
 use std::io::Read;
+use std::io;
+use std::fs::{self, DirEntry};
 
 /// # Usage
 /// takes a string line and the path to our time_tracker.log file and creates a new
@@ -36,41 +38,51 @@ pub fn print_logs(path: &std::path::Path) {
     }
 }
 
+// one possible implementation of walking a directory only visiting files
+fn visit_dirs(dir: &Path, cb: &dyn Fn(&DirEntry)) -> io::Result<()> {
+    if dir.is_dir() {
+        for entry in fs::read_dir(dir)? {
+            let entry = entry?;
+            let path = entry.path();
+            if path.is_dir() {
+                visit_dirs(&path, cb)?;
+            } else {
+                cb(&entry);
+            }
+        }
+    }
+    Ok(())
+}
+
 // check our log if it exists
 pub fn log_file_exists(path: &str) -> bool {
     Path::new(&path).exists()
 }
 
-pub fn read_log_file_to_vec(path: String) -> Vec<String> {
-    if log_file_exists(&path) {
-        let file = match File::open(&path) {
-            Ok(f) => f,
-            Err(why) => panic!("{}", why),
-        };
-        let reader = std::io::BufReader::new(file);
-        let mut times: Vec<String> = Vec::new();
-        for line in reader.lines() {
-            match line {
-                Ok(l) => times.push(l),
-                Err(why) => panic!("{}", why),
-            }
-        }
-        return times;
-    } else {
-        panic!("Log file does not exist!");
-    }
+pub fn read_log_file_to_vec(path: String) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+    let file: File = File::open(&path)?;
+    let reader: std::io::BufReader<File> = std::io::BufReader::new(file);
+    let times: Vec<String> = reader.lines().map(|l| l.unwrap()).collect();
+        
+    Ok(times)
+    // if log_file_exists(&path) {
+    //     let file: File = File::open(&path)?;
+    //     let reader: std::io::BufReader<File> = std::io::BufReader::new(file);
+    //     let times: Vec<String> = reader.lines().map(|l| l.unwrap()).collect();
+        
+    //     Ok(times)
+
+    // } else {
+    //     panic!("Log file does not exist!");
+    // }
 }
 
-pub fn load_log_file(path: &'static str) -> String {
-    let mut file = match File::open(path) {
-        Ok(file) => file,
-        Err(why) => panic!("{}", why),
-    };
-    let mut results = String::new();
-    match file.read_to_string(&mut results) {
-        Ok(_) => return results,
-        Err(why) => panic!("{}", why),
-    };
+pub fn load_log_file(path: &'static str) -> Result<String, Box<dyn std::error::Error>> {
+    let mut results: String = String::new();
+    let mut file = File::open(path)?;
+    file.read_to_string(&mut results)?;
+
+    Ok(results)
 }
 
 #[cfg(test)]
@@ -79,6 +91,9 @@ mod tests {
 
     #[test]
     pub fn test_load_log_file() {
-        load_log_file("log_file.json");
+        match load_log_file("/home/user/workspace/time_tracker/log_file.json") {
+            Ok(v) => println!("{}", v),
+            Err(why) => panic!("{}", why),
+        }
     }
 }

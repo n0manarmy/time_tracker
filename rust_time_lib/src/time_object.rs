@@ -153,7 +153,10 @@ mod tests {
 
     #[test]
     pub fn read_log_file_to_time_object() {
-        let times: Vec<String> = file_utils::read_log_file_to_vec("log_file.json".into());
+        let times = match file_utils::read_log_file_to_vec("log_file.json".into()) {
+            Ok(v) => v,
+            Err(why) => panic!("{}", why),
+        };
         let mut time_objects: Vec<TimeObject> = Vec::new();
         dbg!("{:?}", &times);
         for t in times {
