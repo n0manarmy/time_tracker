@@ -1,7 +1,7 @@
 console.log('init main.js');
 
 // Modules to control application life and create native browser window
-const { globalShortcut, app, BrowserWindow, protocol, Menu } = require('electron');
+const { globalShortcut, app, BrowserWindow, protocol, Menu, dialog } = require('electron');
 const path = require('path');
 
 // Standard scheme must be registered before the app is ready
@@ -13,6 +13,11 @@ protocol.registerSchemesAsPrivileged([{
 
 function createWindow() {
 	// Create the browser window.
+
+	console.log(dialog.showOpenDialog({filters: [{
+		name: 'All Files',
+		extensions: ["json"]}], properties: ['openFile']}))
+
 	const mainWindow = new BrowserWindow({
 		width: 800,
 		height: 800,
@@ -48,6 +53,7 @@ app.whenReady().then(() => {
 	// win.webContents.on('did-finish-load', () => {
 	// 	win.webContents.send('main_load_log_file', 'main_load_log_file');
 	// })
+
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

@@ -41,39 +41,39 @@ pub fn clock_in_out(state: String) -> TimeObjHelper {
     
 }
 
-#[wasm_bindgen]
-pub fn get_previous_logs() -> Vec<JsValue> {
-    unsafe {
-        web_sys::console::log_1(&format!("get_previous_logs").into());
-    }    
-    load_previous_logs()
-}
+// #[wasm_bindgen]
+// pub fn get_previous_logs() -> Vec<JsValue> {
+//     unsafe {
+//         web_sys::console::log_1(&format!("get_previous_logs").into());
+//     }    
+//     load_previous_logs()
+// }
 
-pub fn load_previous_logs() -> Vec<JsValue> {
-    let log_file: String = match file_utils::load_log_file("/home/user/workspace/time_tracker/log_file.json") {
-        Ok(v) => v,
-        Err(why) => panic!("{}", why),
-    };
-    let log_file = log_file.lines().map(|l| l.to_string()).collect();
+// pub fn load_previous_logs() -> Vec<JsValue> {
+//     let log_file: String = match file_utils::load_log_file("/home/user/workspace/time_tracker/log_file.json") {
+//         Ok(v) => v,
+//         Err(why) => panic!("{}", why),
+//     };
+//     let log_file = log_file.lines().map(|l| l.to_string()).collect();
     
-    let log_file = time_object::TimeObject::build_time_object_vec(log_file);
+//     let log_file = time_object::TimeObject::build_time_object_vec(log_file);
 
-    let log_file = log_file.into_iter().map(|log| time_obj_helper::time_object_to_js_value(log)).collect();
+//     let log_file = log_file.into_iter().map(|log| time_obj_helper::time_object_to_js_value(log)).collect();
 
-    log_file
-}
+//     log_file
+// }
 
-#[cfg(test)]
-mod test {
+// #[cfg(test)]
+// mod test {
 
-    use super::*;
+//     use super::*;
 
-    #[test]
-    pub fn test_load_previous_logs() {
-        let log_file = load_previous_logs();
-        dbg!(&log_file);
-        // for l in log_file {
-        //     println!("{:?}", l);
-        // }
-    }
-}
+//     #[test]
+//     pub fn test_load_previous_logs() {
+//         let log_file = load_previous_logs();
+//         dbg!(&log_file);
+//         // for l in log_file {
+//         //     println!("{:?}", l);
+//         // }
+//     }
+// }

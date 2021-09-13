@@ -17,9 +17,9 @@ const time_out_button = document.getElementById('time_out_button');
 
 rust_worker.onmessage = function(event) {
     switch (event.data[0]) {
-        case 'ack_load_log_file':
-            console.log('ack_load_log_file');
-            console.log(event.data[1]);
+        // case 'ack_load_log_file':
+        //     console.log('ack_load_log_file');
+        //     console.log(event.data[1]);
         case 'ack_get_current_time':
             document.getElementById('current_time_value').innerHTML = event.data[1];
             break;
@@ -81,4 +81,4 @@ time_out_button.addEventListener('click', () => {
 //     rust_worker.postMessage('load_log_file');
 // });
 
-rust_worker.postMessage(['load_log_file']);
+// rust_worker.postMessage(['load_log_file']);
