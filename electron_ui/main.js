@@ -1,7 +1,7 @@
 console.log('init main.js');
 
 // Modules to control application life and create native browser window
-const { globalShortcut, app, BrowserWindow, protocol, Menu, dialog } = require('electron');
+const { globalShortcut, app, BrowserWindow, protocol, Menu, dialog, ipcMain } = require('electron');
 const path = require('path');
 
 // Standard scheme must be registered before the app is ready
@@ -14,9 +14,13 @@ protocol.registerSchemesAsPrivileged([{
 function createWindow() {
 	// Create the browser window.
 
-	console.log(dialog.showOpenDialog({filters: [{
+	dialog.showOpenDialog({filters: [{
 		name: 'All Files',
-		extensions: ["json"]}], properties: ['openFile']}))
+		extensions: ["json"]}], properties: ['openFile']}).then(result => {
+			console.log(result)
+		}).catch( err => {
+			console.log(err)
+		})
 
 	const mainWindow = new BrowserWindow({
 		width: 800,
@@ -24,7 +28,7 @@ function createWindow() {
 		// maxHeight: 400,
 		webPreferences: {
 			nodeIntegrationInWorker: true,
-			contextIsolation: false,
+			contextIsolation: true,
 			nodeIntegration: true,
 			preload: path.join(__dirname, 'preload.js')
 		}
@@ -65,3 +69,6 @@ app.on('window-all-closed', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+ipcMain.on('load-file-selected', (event, arg) => {
+	console.log(arg)
+})
