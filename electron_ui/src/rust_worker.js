@@ -1,7 +1,7 @@
 console.log("init rust_worker");
 
 const path = require('path');
-const wasm_path = path.resolve(__dirname, '../rust_time_lib/pkg/time_tracker');
+const wasm_path = path.resolve(__dirname, '../../rust_time_lib/pkg/time_tracker');
 
 var wasm_interface = require(wasm_path);
 var state;
