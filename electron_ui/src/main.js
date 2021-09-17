@@ -28,14 +28,14 @@ function createWindow() {
 		// maxHeight: 400,
 		webPreferences: {
 			nodeIntegrationInWorker: true,
-			contextIsolation: true,
+			contextIsolation: false,
 			nodeIntegration: true,
 			preload: path.join(__dirname, 'preload.js')
 		}
 	});
 
 	// and load the index.html of the app.
-	mainWindow.loadFile('index.html');
+	mainWindow.loadFile('src/index.html');
 
 	// Open the DevTools.
 	mainWindow.webContents.openDevTools();

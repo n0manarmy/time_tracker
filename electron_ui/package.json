@@ -2,7 +2,7 @@
   "name": "time_tracker_ui",
   "version": "1.0.0",
   "description": "UI Interface for rust time tracking library",
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
     "start": "electron ."
   },
