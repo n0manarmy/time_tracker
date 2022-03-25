@@ -9,6 +9,6 @@
   "author": "Penn Wilbert",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^13.1.7"
+    "electron": "^13.6.6"
   }
 }
